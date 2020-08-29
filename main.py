@@ -2,12 +2,17 @@ import telebot
 from telebot import types
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardRemove
 import scrape
+import os
+from flask import Flask, request
 
+
+server = Flask(__name__)
 TOKEN = "1245288199:AAHrFIrxoJPsqeHzUmOtZ1cDvJ3lwR3zb9g"
 bot = telebot.TeleBot(TOKEN)
 LIBRARY = {"Li Ka Shing Library": "lks",
            "Kwa Geok Choo Law Library": "kgc"}
 OCCUPANCY = scrape.get_occupancy()
+
 
 # ========Functions=======
 @bot.message_handler(commands=['start','help'])
@@ -39,5 +44,19 @@ def command_default(message):
     # this is the standard reply to a normal message
     bot.send_message(chat_id, f"I don't understand \n <code>{message.text}</code> \nMaybe try the help page at /help", parse_mode="HTML")
 
+
+# ========Server=======
+@server.route('/' + TOKEN, methods=['POST'])
+def getMessage():
+    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+    return "!", 200
+
+@server.route("/")
+def webhook():
+    bot.remove_webhook()
+    bot.set_webhook(url='https://shrouded-ravine-38898.herokuapp.com/' + TOKEN)
+    return "!", 200
+
+
 if __name__ == "__main__":
-    bot.polling()
+    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
