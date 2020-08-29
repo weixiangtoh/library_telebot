@@ -98,7 +98,7 @@ python-dateutil==2.8.1
 python-telegram-bot==12.8
 PyTweening==1.0.3
 pytz==2020.1
-pywin32==227
+pywin32<=227
 pywinpty==0.5.7
 PyYAML==5.3.1
 pyzmq==19.0.1
