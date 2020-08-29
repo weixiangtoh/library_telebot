@@ -29,3 +29,5 @@ def get_occupancy():
     results["kgc"] = kgc_num
 
     return results
+
+print(get_occupancy())
