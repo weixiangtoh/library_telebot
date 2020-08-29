@@ -13,7 +13,6 @@ TOKEN = "1245288199:AAHrFIrxoJPsqeHzUmOtZ1cDvJ3lwR3zb9g"
 bot = telebot.TeleBot(TOKEN)
 LIBRARY = {"Li Ka Shing Library": "lks",
            "Kwa Geok Choo Law Library": "kgc"}
-OCCUPANCY = scrape.get_occupancy()
 
 
 # ========Functions=======
@@ -35,6 +34,7 @@ def show_occupancy(message):
     chat_id = message.chat.id
     if message.text in LIBRARY:
         key = LIBRARY[message.text]
+        OCCUPANCY = scrape.get_occupancy()
         bot.send_message(chat_id, f"The current occupancy in <code>{message.text}</code> is <code><strong>{OCCUPANCY[key]}</strong></code>." , parse_mode="HTML")
     else:
         bot.register_next_step_handler(message, command_default)
