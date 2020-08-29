@@ -60,7 +60,7 @@ def command_default(message):
 #     return "!", 200
 
 bot.remove_webhook()
-bot.set_webhook(url='https://shrouded-ravine-38898.herokuapp.com/' + TOKEN)
+# bot.set_webhook(url='https://shrouded-ravine-38898.herokuapp.com/' + TOKEN)
 bot.polling(none_stop=True)
 # if __name__ == "__main__":
 #     server.run(host="0.0.0.0", port=PORT)
