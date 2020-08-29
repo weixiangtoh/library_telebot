@@ -3,10 +3,12 @@ from telebot import types
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardRemove
 import scrape
 import os
-from flask import Flask, request
+# from flask import Flask, request
 
 
-server = Flask(__name__)
+PORT = int(os.environ.get('PORT', 5000))
+HOST = "0.0.0.0"
+# server = Flask(__name__)
 TOKEN = "1245288199:AAHrFIrxoJPsqeHzUmOtZ1cDvJ3lwR3zb9g"
 bot = telebot.TeleBot(TOKEN)
 LIBRARY = {"Li Ka Shing Library": "lks",
@@ -46,19 +48,18 @@ def command_default(message):
 
 
 # ========Server=======
-@server.route('/' + TOKEN, methods=['POST'])
-def getMessage():
-    bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
-    return "!", 200
+# @server.route('/' + TOKEN, methods=['POST'])
+# def getMessage():
+#     bot.process_new_updates([telebot.types.Update.de_json(request.stream.read().decode("utf-8"))])
+#     return "!", 200
 
-@server.route("/")
-def webhook():
-    bot.remove_webhook()
-    bot.set_webhook(url='https://shrouded-ravine-38898.herokuapp.com/' + TOKEN)
-    return "!", 200
+# @server.route("/")
+# def webhook():
+#     bot.remove_webhook()
+#     bot.set_webhook(url='https://shrouded-ravine-38898.herokuapp.com/' + TOKEN)
+#     return "!", 200
 
 
 bot.polling(none_stop=True)
-
-if __name__ == "__main__":
-    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+# if __name__ == "__main__":
+#     server.run(host="0.0.0.0", port=PORT)
