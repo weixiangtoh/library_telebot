@@ -1,1 +1,1 @@
-web: python main.py ${PORT} ${HOST}
+web: python main.py 0.0.0.0:5000
