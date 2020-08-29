@@ -6,8 +6,8 @@ import os
 # from flask import Flask, request
 
 
-PORT = int(os.environ.get('PORT', 5000))
-HOST = "0.0.0.0"
+# PORT = int(os.environ.get('PORT', 5000))
+# HOST = "0.0.0.0"
 # server = Flask(__name__)
 TOKEN = "1245288199:AAHrFIrxoJPsqeHzUmOtZ1cDvJ3lwR3zb9g"
 bot = telebot.TeleBot(TOKEN)

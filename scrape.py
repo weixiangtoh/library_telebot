@@ -1,13 +1,13 @@
 import requests
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 
 def get_occupancy():
     URL = "https://lti.library.smu.edu.sg/counter/count.json"
-    page = requests.get(URL)
+    page = requests.get(URL).text
 
-    soup = BeautifulSoup(page.content, 'html.parser')
+    # soup = BeautifulSoup(page.content, 'html.parser')
     # print(soup)
-    text = str(soup)
+    text = str(page)
     results = {"lks": "",
                 "kgc": "" }
     lks_pos = text.find('"inside": ')
