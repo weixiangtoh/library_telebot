@@ -57,7 +57,8 @@ def webhook():
     bot.set_webhook(url='https://shrouded-ravine-38898.herokuapp.com/' + TOKEN)
     return "!", 200
 
-# bot.polling()
+
+bot.polling(none_stop=True)
 
 if __name__ == "__main__":
     server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
