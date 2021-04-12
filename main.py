@@ -4,7 +4,7 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 import scrape
 import os
 
-TOKEN = os.environ.get("TOKEN")
+TOKEN = "1245288199:AAHrFIrxoJPsqeHzUmOtZ1cDvJ3lwR3zb9g"
 bot = telebot.TeleBot(TOKEN)
 LIBRARY = {"Li Ka Shing Library": "lks",
            "Kwa Geok Choo Law Library": "kgc"}
