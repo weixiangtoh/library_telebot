@@ -1,14 +1,14 @@
 import telebot
 from telebot import types
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton,ReplyKeyboardRemove
+from telebot.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 import scrape
 import os
-# from flask import Flask, request
+from flask import Flask, request
+from flask_cors import CORS
 
+app = Flask(__name__)
+CORS(app)
 
-# PORT = int(os.environ.get('PORT', 5000))
-# HOST = "0.0.0.0"
-# server = Flask(__name__)
 TOKEN = "1245288199:AAHrFIrxoJPsqeHzUmOtZ1cDvJ3lwR3zb9g"
 bot = telebot.TeleBot(TOKEN)
 LIBRARY = {"Li Ka Shing Library": "lks",
@@ -16,8 +16,15 @@ LIBRARY = {"Li Ka Shing Library": "lks",
 
 
 # ========Functions=======
-@bot.message_handler(commands=['start','help'])
+@bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
+    chat_id = message.chat.id
+
+    answer = bot.send_message(
+        chat_id, "<p>Hi, welcome to SMU Library bot!</p><br/><p>Simply click which library you would like to check the occupancy of!</p>", reply_markup="HTML")
+    ask(message)
+
+def ask(message):
     chat_id = message.chat.id
 
     markup = ReplyKeyboardMarkup()
@@ -27,24 +34,33 @@ def send_welcome(message):
     markup.row(itembtn2)
     markup.one_time_keyboard = True
 
-    answer = bot.send_message(chat_id, "Hi, welcome to SMU Library bot! \nWhich library would you want to check?", reply_markup=markup)
+    answer = bot.send_message(
+        chat_id, "Which library would you want to check?", reply_markup=markup)
     bot.register_next_step_handler(answer, show_occupancy)
+
 
 def show_occupancy(message):
     chat_id = message.chat.id
     if message.text in LIBRARY:
         key = LIBRARY[message.text]
         OCCUPANCY = scrape.get_occupancy()
-        bot.send_message(chat_id, f"The current occupancy in <code>{message.text}</code> is <code><strong>{OCCUPANCY[key]}</strong></code>." , parse_mode="HTML")
+        bot.send_message(
+            chat_id, f"The current occupancy in <code>{message.text}</code> is <code><strong>{OCCUPANCY[key]}</strong></code>.", parse_mode="HTML")
     else:
         bot.register_next_step_handler(message, command_default)
 
+    ask(message)
+
 # default handler for every other text
+
+
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def command_default(message):
     chat_id = message.chat.id
     # this is the standard reply to a normal message
-    bot.send_message(chat_id, f"I don't understand \n <code>{message.text}</code> \nMaybe try the help page at /help", parse_mode="HTML")
+    bot.send_message(
+        chat_id, f"I don't understand \n <code>{message.text}</code> \nMaybe try the help page at /help", parse_mode="HTML")
+    ask(message)
 
 
 # ========Server=======
@@ -59,8 +75,9 @@ def command_default(message):
 #     bot.set_webhook(url='https://shrouded-ravine-38898.herokuapp.com/' + TOKEN)
 #     return "!", 200
 
-bot.remove_webhook()
+# bot.remove_webhook()
 bot.polling()
 
-# if __name__ == "__main__":
-#     server.run(host="0.0.0.0", port=PORT)
+if __name__ == "__main__":
+    PORT = int(os.environ.get('PORT', 5000))
+    app.run(host="0.0.0.0", port=PORT, debug=False)
