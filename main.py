@@ -16,7 +16,7 @@ def send_welcome(message):
     chat_id = message.chat.id
 
     answer = bot.send_message(
-        chat_id, "<p>Hi, welcome to SMU Library bot!</p><br/><p>Simply click which library you would like to check the occupancy of!</p>", reply_markup="HTML")
+        chat_id, "<p>Hi, welcome to SMU Library bot!</p><br/><p>Simply click which library you would like to check the occupancy of!</p>", parse_mode="HTML")
     ask(message)
 
 def ask(message):
@@ -41,10 +41,10 @@ def show_occupancy(message):
         OCCUPANCY = scrape.get_occupancy()
         bot.send_message(
             chat_id, f"The current occupancy in <code>{message.text}</code> is <code><strong>{OCCUPANCY[key]}</strong></code>.", parse_mode="HTML")
+        ask(message)
     else:
         bot.register_next_step_handler(message, command_default)
 
-    ask(message)
 
 # default handler for every other text
 @bot.message_handler(func=lambda message: True, content_types=['text'])
@@ -55,4 +55,5 @@ def command_default(message):
         chat_id, f"I don't understand \n <code>{message.text}</code> \nMaybe try the help page at /help", parse_mode="HTML")
     ask(message)
 
+# bot.remove_webhook()
 bot.polling()
