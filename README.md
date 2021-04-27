@@ -44,4 +44,9 @@ heroku container:push worker -a <Heroku app name>
 heroku container:release worker -a <Heroku app name>
 ```
 
+5. Scale your application
+```
+heroku ps:scale worker=1 -a <Heroku app name>
+```
+
 **You can also use `web` to push the application with Flask**
