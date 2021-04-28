@@ -1,4 +1,4 @@
-TOKEN = <TOKEN>
+TOKEN = <TELEGRAM BOT TOKEN>
 import logging
 from typing import Dict
 
@@ -22,7 +22,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-CHOOSING, CHECK_CAP = range(2)
+CHECK_CAP = range(1)
 
 LIBRARY = {"Li Ka Shing Library": "lks",
            "Kwa Geok Choo Law Library": "kgc"}
@@ -42,7 +42,14 @@ def start(update: Update, _: CallbackContext) -> int:
 
     return CHECK_CAP
 
-def library_choice(update: Update, _: CallbackContext) -> int:
+def error(update: Update, _: CallbackContext) -> int:
+    update.message.reply_text(f"I'm sorry, I do not understand {update.message.text}. Please choose from the options available")
+    update.message.reply_text("Which library would you like to check?", reply_markup=markup)
+
+    return CHECK_CAP
+
+def start_error(update: Update, _: CallbackContext) -> int:
+    update.message.reply_text(f"You have already started the bot!")
     update.message.reply_text("Which library would you like to check?", reply_markup=markup)
 
     return CHECK_CAP
@@ -63,8 +70,6 @@ def get_occupancy(update: Update, context: CallbackContext) -> int:
         update.message.reply_text("Which library would you like to check?", reply_markup=markup)
 
         return CHECK_CAP
-    else:
-        return CHOOSING
 
 def end(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(
@@ -85,18 +90,16 @@ def main() -> None:
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
         states={
-            CHOOSING: [
-                MessageHandler(
-                    Filters.text & ~Filters.command , library_choice
-                )
-            ],
+            # END: [MessageHandler(Filters.regex('^End$'), end)],
             CHECK_CAP: [
                 MessageHandler(
                     Filters.regex('^(Li Ka Shing Library|Kwa Geok Choo Law Library)$'), get_occupancy
-                )
+                ),
+                MessageHandler(Filters.regex('^End$'), end),
+                MessageHandler(Filters.regex('^/start$'), start_error),
             ],
         },
-        fallbacks=[MessageHandler(Filters.regex('^End$'), end)],
+        fallbacks=[MessageHandler(Filters.text & ~Filters.command , error)],
     )
 
     dispatcher.add_handler(conv_handler)
